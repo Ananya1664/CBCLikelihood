@@ -18,7 +18,7 @@ Data['Max Horizon'][RUN] = {}
 Data['PSD'][RUN] = {}
 for det in ['H1', 'L1']:
     # Read PSD
-    path="{0}/CBCMassesToGWSNR/Data/PSDs/{1}/{2}_{1}_PSD.txt".format(WPATH, RUN, det)
+    path="/Home/ananya/pycbcTut/PSD.txt"
     psd = np.genfromtxt(path, delimiter=" ")
     if first_time:
         Data['Sample Frequencies'] = psd[:, 0]
