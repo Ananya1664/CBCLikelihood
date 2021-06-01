@@ -9,7 +9,7 @@ import json
 import h5py as hp
 import numpy as np
 import matplotlib.pyplot as plt
-6 
+
 from pycbc.waveform import get_fd_waveform
 import pycbc.filter.matchedfilter as mf
 import pycbc.types.frequencyseries as pf
@@ -53,9 +53,6 @@ DEFAULT_APPROXIMANT_BNS = 'TaylorF2'
 DEFAULT_APPROXIMANT_BBH = 'IMRPhenomD'
 
 ##################################################
-
-# WPATH="/home/shreejit.jadhav/WORK"
-WPATH="/home/shreejit/Dropbox/Academic/WORK"
 
 def _get_waveform_params(**kwargs):
     params = OrderedDict(DEFAULT_PARAMS)
@@ -311,7 +308,7 @@ def sample_redshifts(zmax, Md, omega=OMEGA):
         # acceptance rate is 50% so take every 10th
         # draw from distribution to avoid repeating
         # the same value too often
-        for _ in xrange(10):
+        for _ in range(10):
             z = np.random.uniform(0.0, zmax)
             p = pdf(z)
             if p > p0 or np.random.random() < p / p0:

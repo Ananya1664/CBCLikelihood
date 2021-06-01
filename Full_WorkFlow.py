@@ -1,14 +1,14 @@
 # # Full Workflow
 from funcs import *
 
-RepoPath = '/home/repopath/'
+RepoPath = '/home/shreejit/WORK/CBCLikelihood'
 mass_min = 5.
 mass_max = 445. # Heavier than this will lower the merger freq of heaviest BBH (225, 225) below f_min
 templ_fmin = 10. # start freq of templates
-i_f_start = 2**11 # = 2048. Starting INDEX for freq of the PSD
+i_f_start = 2**5 # = 2048. Starting INDEX for freq of the PSD
 Mtot = np.arange(10, mass_min+mass_max, 10)
 Data = {'Total Mass': Mtot, 'Sample Frequencies': [], 'PSD': {}, 'Redshift': {}, 'Max Horizon': {}}
-RUN='O1'
+RUN='Aplus'
 
 ## Finding Horizon
 first_time = True
@@ -18,7 +18,7 @@ Data['Max Horizon'][RUN] = {}
 Data['PSD'][RUN] = {}
 for det in ['H1', 'L1']:
     # Read PSD
-    path="/Home/ananya/pycbcTut/PSD.txt"
+    path=RepoPath+"/Data/PSD_"+RUN+".txt"
     psd = np.genfromtxt(path, delimiter=" ")
     if first_time:
         Data['Sample Frequencies'] = psd[:, 0]
@@ -27,7 +27,8 @@ for det in ['H1', 'L1']:
 
 for M in tqdm(Data['Total Mass']):
     # ATTN: Only L1 PSD used for calculating horizon redshift
-    Data['Redshift'][RUN].append(horizon_redshift(Data['Sample Frequencies'][i_f_start:],                                                      Data['PSD'][RUN]['L1'][i_f_start:],                                                       omega=OMEGA, m1=M/2., m2=M/2.))
+    Data['Redshift'][RUN].append(horizon_redshift(Data['Sample Frequencies'][i_f_start:], Data['PSD'][RUN]['L1'][i_f_start:], omega=OMEGA, m1=M/2., m2=M/2.))
+
 Data['Redshift'][RUN] = np.array(Data['Redshift'][RUN])
 # catch max redshift, corresponding mass and luminosity distance
 i_max = Data['Redshift'][RUN].argmax()
@@ -35,11 +36,6 @@ i_max = Data['Redshift'][RUN].argmax()
 Data['Max Horizon'][RUN]['Total Mass'] = Data['Total Mass'][i_max]
 Data['Max Horizon'][RUN]['Redshift'] = Data['Redshift'][RUN][i_max]
 Data['Max Horizon'][RUN]['Luminosity Distance'] = lal.LuminosityDistance(OMEGA, Data['Redshift'][RUN][i_max])
-
-
-# ### Save/Load data
-# np.save("{0}/CBCMassesToGWSNR/Data/Horizon_data.npy".format(WPATH), Data)
-# Data = np.load("{0}/CBCMassesToGWSNR/Data/Horizon_data.npy".format(WPATH)).item()
 
 Zmax = {}
 
@@ -109,4 +105,4 @@ for distrib in Distributions:
     # Save the SNR array for the current distribution
     in_distrib.create_dataset("SNR", data=SNR)
 
-    inj_data.close()
+inj_data.close()
